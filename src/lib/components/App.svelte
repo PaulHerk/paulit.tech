@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { T } from '@threlte/core';
+	import { Canvas } from '@threlte/core';
+	import Scene from './Scene.svelte';
 </script>
 
-<T.Mesh>
-	<T.BoxGeometry />
-	<T.MeshBasicMaterial />
-</T.Mesh>
+<Canvas>
+	<Scene />
+</Canvas>
