@@ -14,7 +14,7 @@ Title: Spaceship
 
 	export const ref = new Group();
 
-	const gltf = useGltf('/static/models/spaceship.glb');
+	const gltf = useGltf('models/spaceship.glb');
 
 	gltf.then((model) => {
 		function alphaFix(material) {
