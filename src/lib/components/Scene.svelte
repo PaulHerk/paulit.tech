@@ -1,23 +1,28 @@
 <script lang="ts">
 	import { T, useTask, useThrelte } from '@threlte/core';
-	import { ContactShadows, Float, Grid, OrbitControls } from '@threlte/extras';
+	import { OrbitControls } from '@threlte/extras';
 	import Spaceship from './Spaceship.svelte';
 	import {
-		AmbientLight,
-		DirectionalLight,
-		MeshBasicMaterial,
-		PerspectiveCamera,
-		PlaneGeometry,
+		BufferGeometry,
+		Material,
+		Mesh,
 		Raycaster,
-		SphereGeometry,
 		Vector2,
-		Vector3
+		Vector3,
+		type NormalBufferAttributes,
+		type Object3DEventMap
 	} from 'three';
 	import { onMount } from 'svelte';
 	import { spring } from 'svelte/motion';
+	import Stars from './Stars.svelte';
 
-	let planeRef;
-	let sphereRef;
+	type RefMesh = Mesh<
+		BufferGeometry<NormalBufferAttributes>,
+		Material | Material[],
+		Object3DEventMap
+	>;
+	let planeRef: RefMesh;
+	let sphereRef: RefMesh;
 
 	const { scene, camera, renderer } = useThrelte();
 	let intersectionPoint = new Vector3(0, 0, 0);
@@ -26,6 +31,7 @@
 
 	useTask(() => {
 		posY.set(sphereRef.position.y);
+		if (!intersectionPoint) return;
 		const direction = intersectionPoint
 			.clone()
 			.sub(new Vector3(0, $posY, 0))
@@ -38,7 +44,7 @@
 		const raycaster = new Raycaster();
 		const pointer = new Vector2();
 
-		function onPointerMove(event) {
+		function onPointerMove(event: { clientX: number; clientY: number }) {
 			pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
 			pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
@@ -61,13 +67,13 @@
 
 <T.PerspectiveCamera
 	makeDefault
-	position={[-5, 6, 10]}
+	position={[-9, 11, 19]}
 	fov={25}
 	on:create={({ ref }) => {
 		ref.lookAt(0, 0, 0);
 	}}
 >
-	<!-- <OrbitControls enableDamping target={[0, 0, 0]} /> -->
+	<OrbitControls enableDamping target={[0, 0, 0]} />
 </T.PerspectiveCamera>
 
 <T.DirectionalLight intensity={1.8} position={[0, 10, 0]} castShadow shadow.bias={-0.0001} />
@@ -81,15 +87,16 @@
 	fadeDistance={25}
 	cellSize={2}
 /> -->
+<Stars />
 
 <Spaceship position.y={$posY} rotation={[$angleZ, $angleZ / 10, $angleZ, 'ZXY']} />
 
 <T.Mesh renderOrder={2} bind:ref={planeRef}>
-	<T.PlaneGeometry args={[20, 20]} />
-	<T.MeshBasicMaterial color={[1, 0, 1]} transparent opacity={0} />
+	<T.PlaneGeometry args={[1000, 1000]} />
+	<T.MeshBasicMaterial transparent opacity={0} />
 </T.Mesh>
 
 <T.Mesh position={[1, 2, 0]} bind:ref={sphereRef}>
-	<T.SphereGeometry args={[0.1, 20, 20]} />
-	<T.MeshBasicMaterial color={[1, 0, 0]} transparent opacity={0} />
+	<!-- <T.SphereGeometry args={[0.1, 20, 20]} /> -->
+	<T.MeshBasicMaterial transparent opacity={0} />
 </T.Mesh>
