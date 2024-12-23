@@ -8,7 +8,6 @@
 	const STARS_COUNT = 300;
 	let stars: Star[] = [];
 	const colors = ['#fcaa67', '#C75D59', '#ffffc7', '#8CC5C6', '#A5898C'];
-
 	class Star {
 		pos: Vector3;
 		len: number;
@@ -55,7 +54,7 @@
 		<T.MeshBasicMaterial side={DoubleSide} alphaMap={value} transparent />
 
 		{#each stars as star}
-			<Instance position={star.pos.toArray()} scale={[star.len, 1, 1]} color={star.color} />
+			<Instance position={star.pos.toArray()} scale={[star.len, 0.5, 1]} color={star.color} />
 		{/each}
 	</InstancedMesh>
 {/await}

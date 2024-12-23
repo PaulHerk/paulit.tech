@@ -7,25 +7,26 @@ Source: https://sketchfab.com/3d-models/spaceship-2b07b45c32df44fa8a9591c28d5f34
 Title: Spaceship
 -->
 
-<script>
-	import { Group } from 'three';
-	import { T, forwardEventHandlers } from '@threlte/core';
-	import { useGltf } from '@threlte/extras';
+<script lang="ts">
+	import { Group, Material } from 'three';
+	import { T, forwardEventHandlers, useTask } from '@threlte/core';
+	import { useGltf, useTexture } from '@threlte/extras';
+	import Beam from './Beam.svelte';
 
 	export const ref = new Group();
 
 	const gltf = useGltf('models/spaceship.glb');
 
-	gltf.then((model) => {
-		function alphaFix(material) {
-			material.transparent = true;
-			material.alphaToCoverage = true;
-			material.depthTest = true;
-			material.depthWrite = true;
-		}
-		// alphaFix(model.materials.spaceship_racer);
-		// alphaFix(model.materials.cockpit);
-	});
+	// gltf.then((model) => {
+	// 	function alphaFix(material: Material) {
+	// 		material.transparent = true;
+	// 		material.alphaToCoverage = true;
+	// 		material.depthTest = true;
+	// 		material.depthWrite = true;
+	// 	}
+	// 	alphaFix(model.materials.spaceship_racer);
+	// 	alphaFix(model.materials.cockpit);
+	// });
 
 	const component = forwardEventHandlers();
 </script>
@@ -72,6 +73,8 @@ Title: Spaceship
 					scale={[-1, 1, 1]}
 				/>
 			</T.Group>
+			<Beam pos={[100, 0, -380]} />
+			<Beam pos={[-100, 0, -380]} />
 		</T.Group>
 	{:catch error}
 		<slot name="error" {error} />
