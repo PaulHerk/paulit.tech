@@ -5,6 +5,7 @@
 	import {
 		BufferGeometry,
 		Color,
+		DoubleSide,
 		Material,
 		Mesh,
 		PMREMGenerator,
@@ -26,6 +27,8 @@
 		EffectPass,
 		RenderPass
 	} from 'postprocessing';
+	import Planet from './planets/Planet.svelte';
+	import Aboutme from './Aboutme.svelte';
 
 	type RefMesh = Mesh<
 		BufferGeometry<NormalBufferAttributes>,
@@ -67,7 +70,7 @@
 	useTask(
 		(delta) => {
 			posY.set(sphereRef.position.y);
-			if (!intersectionPoint) return;
+			if (!intersectionPoint) intersectionPoint = sphereRef.position;
 			const direction = intersectionPoint
 				.clone()
 				.sub(new Vector3(0, $posY, 0))
@@ -151,6 +154,8 @@
 
 <Stars />
 
+<Planet component={[Aboutme, 'aboutme']} name={'About me'} />
+
 <Spaceship
 	bind:ref={spaceshipRef}
 	position.y={$posY}
@@ -159,10 +164,10 @@
 
 <T.Mesh renderOrder={2} bind:ref={planeRef}>
 	<T.PlaneGeometry args={[1000, 1000]} />
-	<T.MeshBasicMaterial transparent opacity={0} />
+	<T.MeshBasicMaterial transparent opacity={0} side={DoubleSide} />
 </T.Mesh>
 
 <T.Mesh position={[1, 2, 0]} bind:ref={sphereRef}>
 	<!-- <T.SphereGeometry args={[0.1, 20, 20]} /> -->
-	<T.MeshBasicMaterial transparent opacity={0} />
+	<T.MeshBasicMaterial transparent opacity={1} />
 </T.Mesh>
