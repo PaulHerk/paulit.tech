@@ -3,12 +3,15 @@
 	import Scene from './Scene.svelte';
 	import '../../app.css';
 	import { activeComponent } from '../stores/activeComponent';
+	import { slide } from 'svelte/transition';
 </script>
 
 <div id="container">
 	<div class="absolute right-0">
 		{#if $activeComponent[1] !== 'null'}
-			<svelte:component this={$activeComponent[0]} />
+			<div in:slide={{ duration: 400 }} out:slide={{ duration: 400 }}>
+				<svelte:component this={$activeComponent[0]} />
+			</div>
 		{/if}
 	</div>
 	<Canvas>
