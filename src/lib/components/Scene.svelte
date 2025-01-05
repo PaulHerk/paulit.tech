@@ -29,7 +29,7 @@
 	} from 'postprocessing';
 	import Planet from './planets/Planet.svelte';
 	import Aboutme from './Aboutme.svelte';
-
+	import { DEG2RAD } from 'three/src/math/MathUtils.js';
 	type RefMesh = Mesh<
 		BufferGeometry<NormalBufferAttributes>,
 		Material | Material[],
@@ -137,7 +137,15 @@
 		ref.lookAt(0, 0, 0);
 	}}
 >
-	<OrbitControls enableDamping target={[0, 0, 0]} />
+	<OrbitControls
+		enableDamping
+		target={[0, 0, 0]}
+		maxPolarAngle={100 * DEG2RAD}
+		minPolarAngle={60 * DEG2RAD}
+		maxAzimuthAngle={45 * DEG2RAD}
+		minAzimuthAngle={-45 * DEG2RAD}
+		enableZoom={false}
+	/>
 </T.PerspectiveCamera>
 
 <T.DirectionalLight intensity={1.8} position={[0, 10, 0]} castShadow shadow.bias={-0.0001} />
@@ -154,7 +162,19 @@
 
 <Stars />
 
-<Planet component={[Aboutme, 'aboutme']} name={'About me'} />
+<Planet position={[0, 0, -10]} component={[Aboutme, 'aboutme']} name={'About me'}>
+	<T.Mesh>
+		<T.SphereGeometry args={[2, 32, 16]} />
+		<T.MeshPhysicalMaterial
+			metalness={0.9}
+			roughness={0.8}
+			iridesence={1}
+			iridesencelOR={1}
+			color={[0.5, 0.25, 0.1]}
+			transparent
+		/>
+	</T.Mesh>
+</Planet>
 
 <Spaceship
 	bind:ref={spaceshipRef}

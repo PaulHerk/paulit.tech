@@ -1,16 +1,19 @@
 <script lang="ts">
 	import { T } from '@threlte/core';
 	import { tweened } from 'svelte/motion';
-	import { HTML, interactivity, useCursor } from '@threlte/extras';
+	import { HTML, interactivity, Suspense, useCursor, Text } from '@threlte/extras';
+
 	import { activeComponent, type ComponentType } from '../../stores/activeComponent';
+	import { Color } from 'three';
 
 	export let component: [any, ComponentType];
 	export let name: string;
+	export let position: [number, number, number];
 
 	interactivity();
 	const { hovering, onPointerEnter, onPointerLeave } = useCursor('pointer', 'grab');
 
-	let size = tweened(2, {
+	let size = tweened(1, {
 		duration: 200
 	});
 	function setActiveComponent() {
@@ -22,16 +25,17 @@
 	}
 	$: console.log($activeComponent);
 
-	$: $hovering ? ($size = 2.5) : ($size = 2);
+	$: $hovering ? ($size = 1.5) : ($size = 1);
 </script>
 
 <T.Group
-	position={[0, 0, -4]}
+	{position}
 	on:click={setActiveComponent}
 	on:pointerenter={onPointerEnter}
 	on:pointerleave={onPointerLeave}
+	scale={[$size, $size, $size]}
 >
-	<HTML center>
+	<!-- <HTML center position.y={3} transform>
 		<button
 			on:click={setActiveComponent}
 			on:pointerenter={onPointerEnter}
@@ -40,34 +44,29 @@
 			style="background: none; border: none; padding: 0; cursor: pointer;"
 			aria-label={name}
 		>
-			<p class="unselectable" style="color: white; font-size: {$size}rem; margin: 0">{name}</p>
+			<h1
+				class="unselectable scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl"
+				style="color: white; font-size: 40px; margin: 0"
+			>
+				{name}
+			</h1>
 		</button>
-	</HTML>
+	</HTML> -->
+	<Suspense>
+		<Text
+			text={name}
+			position.y={3.5}
+			fontSize={1}
+			anchorX={'center'}
+			color={new Color(56, 189, 248)}
+		>
+			<T.MeshBasicMaterial color={new Color(56, 189, 248)} />
+		</Text>
 
-	<T.Mesh>
-		<T.SphereGeometry args={[$size, 32, 16]} />
-		<T.MeshPhysicalMaterial
-			metalness={0.9}
-			roughness={0.8}
-			iridesence={1}
-			iridesencelOR={1}
-			color={[0.5, 0.25, 0.1]}
-			transparent
-		/>
-	</T.Mesh>
+		<svelte:fragment slot="fallback">
+			<!-- show fallback content while font data is loading -->
+		</svelte:fragment>
+	</Suspense>
+
+	<slot />
 </T.Group>
-
-<style>
-	.unselectable {
-		-webkit-touch-callout: none;
-		-webkit-user-select: none;
-		-khtml-user-select: none;
-		-moz-user-select: none;
-		-ms-user-select: none;
-		user-select: none;
-	}
-	p {
-		font-weight: 900;
-		white-space: nowrap;
-	}
-</style>

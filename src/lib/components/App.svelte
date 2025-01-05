@@ -4,12 +4,13 @@
 	import '../../app.css';
 	import { activeComponent } from '../stores/activeComponent';
 	import { slide } from 'svelte/transition';
+	import { sineIn } from 'svelte/easing';
 </script>
 
 <div id="container">
 	<div class="absolute right-0">
 		{#if $activeComponent[1] !== 'null'}
-			<div in:slide={{ duration: 400 }} out:slide={{ duration: 400 }}>
+			<div in:slide={{ easing: sineIn }} out:slide={{ duration: 300 }}>
 				<svelte:component this={$activeComponent[0]} />
 			</div>
 		{/if}
